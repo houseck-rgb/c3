@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>고기 발주 리스트</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080604;--bg2:#0f0b06;--bg3:#181208;--bg4:#22180a;--bg5:#2e200e;
+  --gold:#c8960a;--gold2:#e8b820;--gold3:#f5d060;--gold4:#a07808;--gold5:#6a5005;
+  --glow:rgba(200,150,10,.13);--gb:rgba(200,150,10,.24);
+  --ivory:#f8f0d8;--ivory2:#d8c898;--ivory3:#a08858;
+  --red-c:#f87171;--r:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--ivory);font-family:'Noto Sans KR',sans-serif;min-height:100vh;padding:0 0 100px}
+
+/* 헤더 */
+.hdr{background:rgba(8,6,4,.97);backdrop-filter:blur(24px);border-bottom:1px solid var(--gb);padding:0 16px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:80}
+.hdr-title{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:20px;color:var(--gold2);letter-spacing:1px}
+.hdr-date{font-size:10px;color:var(--ivory3)}
+
+/* 히어로 */
+.hero{padding:22px 18px 16px;background:linear-gradient(160deg,var(--bg3),var(--bg2) 60%,var(--bg));border-bottom:1px solid rgba(200,150,10,.1);text-align:center}
+.hero-sub{font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:5px;color:var(--gold4);text-transform:uppercase;margin-bottom:6px}
+.hero-title{font-size:clamp(20px,5vw,26px);font-weight:900;letter-spacing:-0.5px}
+.hero-title span{color:var(--red-c)}
+.hero-date{font-size:12px;color:var(--ivory3);margin-top:4px}
+.hero-cnt{display:inline-block;margin-top:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.28);border-radius:20px;padding:3px 14px;font-size:11px;color:var(--red-c)}
+
+/* 섹션 */
+.wrap{max-width:520px;margin:0 auto;padding:18px 14px}
+.slbl{font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:4px;color:var(--gold4);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.slbl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gb),transparent)}
+
+/* 라벨 편집 행 */
+.lbl-row{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.lbl-hint{font-size:12px;color:var(--ivory3);flex-shrink:0}
+.lbl-inp{flex:1;height:32px;background:var(--bg2);border:1px solid rgba(200,150,10,.2);border-radius:8px;color:var(--ivory);font-size:12px;font-family:'Noto Sans KR',sans-serif;padding:0 10px;outline:none;text-align:center;transition:border-color .2s}
+.lbl-inp:focus{border-color:var(--gold)}
+
+/* 테이블 카드 */
+.tcard{background:var(--bg3);border:1px solid rgba(200,150,10,.15);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+.thead-row{display:grid;grid-template-columns:1fr 82px 82px;border-bottom:1px solid rgba(200,150,10,.12);padding:8px 14px 8px 14px}
+.thead-cell{font-family:'Cormorant Garamond',serif;font-size:9px;letter-spacing:2px;color:var(--gold4);text-transform:uppercase;text-align:center}
+.thead-cell.l{text-align:left}
+
+/* 행 */
+.mrow{display:grid;grid-template-columns:1fr 82px 82px;border-bottom:1px solid rgba(200,150,10,.07);align-items:center;transition:background .15s}
+.mrow:last-child{border-bottom:none}
+.mrow.filled{background:rgba(248,113,113,.04)}
+.mrow-name{padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.mrow-emo{font-size:17px;width:22px;text-align:center;flex-shrink:0}
+.mrow-cell{padding:7px 6px;display:flex;align-items:center;justify-content:center}
+
+/* 수량 입력 */
+.qin{width:66px;height:34px;background:var(--bg2);border:1px solid rgba(200,150,10,.18);border-radius:7px;color:var(--ivory3);font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;text-align:center;outline:none;transition:border-color .2s,color .2s}
+.qin.has{border-color:rgba(248,113,113,.45);color:var(--red-c)}
+.qin:focus{border-color:var(--gold)}
+
+/* 미리보기 */
+.prev-box{background:var(--bg2);border:1px solid rgba(200,150,10,.15);border-radius:var(--r);padding:14px;margin-bottom:20px;min-height:72px}
+.prev-empty{font-size:13px;color:var(--ivory3);text-align:center;padding:10px 0}
+.prev-txt{font-size:13px;color:var(--ivory2);white-space:pre-wrap;word-break:break-all;line-height:1.8}
+
+/* 버튼 */
+.share-btn{width:100%;height:52px;background:linear-gradient(135deg,#3A1D00,#5A3200);border:1px solid rgba(200,150,10,.4);border-radius:var(--r);color:var(--gold2);font-size:15px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;transition:all .2s}
+.share-btn:active{transform:scale(.98);opacity:.9}
+.copy-btn{width:100%;height:42px;background:var(--bg3);border:1px solid rgba(200,150,10,.2);border-radius:var(--r);color:var(--ivory3);font-size:13px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;margin-bottom:10px;transition:all .2s}
+.copy-btn:active{background:rgba(200,150,10,.1);color:var(--gold2)}
+.reset-btn{width:100%;height:38px;background:transparent;border:1px dashed rgba(200,150,10,.18);border-radius:var(--r);color:var(--ivory3);font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer}
+.reset-btn:active{color:var(--gold)}
+
+/* 토스트 */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(70px);background:#fff;color:#111;font-size:13px;font-weight:500;padding:10px 22px;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,.45);transition:transform .3s;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-size:22px;filter:drop-shadow(0 0 8px rgba(200,150,10,.5))">🥩</span>
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:8px;letter-spacing:4px;color:var(--gold4);text-transform:uppercase">최우영고기야</div>
+      <div class="hdr-title">고기 발주</div>
+    </div>
+  </div>
+  <div class="hdr-date" id="hdrDate"></div>
+</div>
+
+<div class="hero">
+  <div class="hero-sub">Meat Order List</div>
+  <div class="hero-title">오늘의 <span>고기 발주</span></div>
+  <div class="hero-date" id="heroDate"></div>
+  <div class="hero-cnt" id="heroCnt">0개 입력</div>
+</div>
+
+<div class="wrap">
+  <div class="slbl">🥩 고기 리스트</div>
+
+  <!-- 컬럼 라벨 편집 -->
+  <div class="lbl-row">
+    <span class="lbl-hint">① 라벨:</span>
+    <input class="lbl-inp" id="c1lbl" value="수량" />
+    <span class="lbl-hint">② 라벨:</span>
+    <input class="lbl-inp" id="c2lbl" value="단위" />
+  </div>
+
+  <div class="tcard">
+    <div class="thead-row">
+      <div class="thead-cell l">품목</div>
+      <div class="thead-cell" id="c1h">① 수량</div>
+      <div class="thead-cell" id="c2h">② 단위</div>
+    </div>
+    <div id="meatBody"></div>
+  </div>
+
+  <div class="slbl">📝 메모</div>
+  <textarea id="memo" placeholder="특이사항, 요청사항..." style="width:100%;min-height:64px;background:var(--bg3);border:1px solid rgba(200,150,10,.15);border-radius:var(--r);color:var(--ivory);font-size:13px;font-family:'Noto Sans KR',sans-serif;padding:12px 14px;outline:none;resize:none;margin-bottom:20px;transition:border-color .2s"></textarea>
+
+  <div class="slbl">📋 미리보기</div>
+  <div class="prev-box">
+    <div id="prev" class="prev-empty">수량을 입력하면 여기에 메시지가 표시됩니다.</div>
+  </div>
+
+  <button class="share-btn" onclick="doShare()">📲 카카오톡으로 공유</button>
+  <button class="copy-btn" onclick="doCopy()">📋 텍스트 복사</button>
+  <button class="reset-btn" onclick="doReset()">↺ 전체 초기화</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ITEMS = [
+  {name:'삼겹살',      emoji:'🥓'},
+  {name:'양념 삼겹살', emoji:'🥓'},
+  {name:'갈비살',      emoji:'🥩'},
+  {name:'양념 갈비살', emoji:'🥩'},
+  {name:'앞다리 전각', emoji:'🍖'},
+];
+
+let data = ITEMS.map(v => ({...v, q1:0, q2:0}));
+
+// 날짜
+function setDate() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  const str = `${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${days[d.getDay()]})`;
+  const short = `${d.getMonth()+1}/${d.getDate()}(${days[d.getDay()]})`;
+  document.getElementById('hdrDate').textContent = short;
+  document.getElementById('heroDate').textContent = str;
+}
+setDate();
+
+// 라벨 업데이트
+function updateLabels() {
+  const c1 = document.getElementById('c1lbl').value || '수량';
+  const c2 = document.getElementById('c2lbl').value || '단위';
+  document.getElementById('c1h').textContent = `① ${c1}`;
+  document.getElementById('c2h').textContent = `② ${c2}`;
+  buildPreview();
+}
+document.getElementById('c1lbl').addEventListener('input', updateLabels);
+document.getElementById('c2lbl').addEventListener('input', updateLabels);
+
+// 렌더
+function render() {
+  const body = document.getElementById('meatBody');
+  body.innerHTML = '';
+  data.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'mrow' + (item.q1 > 0 || item.q2 > 0 ? ' filled' : '');
+
+    // 품목명
+    const nm = document.createElement('div');
+    nm.className = 'mrow-name';
+    nm.innerHTML = `<span class="mrow-emo">${item.emoji}</span>${item.name}`;
+
+    // q1 셀
+    const mkCell = (qKey) => {
+      const cell = document.createElement('div');
+      cell.className = 'mrow-cell';
+      const inp = document.createElement('input');
+      inp.type = 'number'; inp.min = '0'; inp.placeholder = '0';
+      inp.className = 'qin' + (item[qKey] > 0 ? ' has' : '');
+      inp.value = item[qKey] > 0 ? item[qKey] : '';
+      inp.addEventListener('input', () => {
+        const n = parseFloat(inp.value);
+        data[i][qKey] = (isNaN(n) || n < 0) ? 0 : n;
+        inp.className = 'qin' + (data[i][qKey] > 0 ? ' has' : '');
+        updateCnt(); buildPreview();
+      });
+      cell.appendChild(inp);
+      return cell;
+    };
+
+    row.append(nm, mkCell('q1'), mkCell('q2'));
+    body.appendChild(row);
+  });
+  updateCnt(); buildPreview();
+}
+
+function updateCnt() {
+  const cnt = data.filter(i => i.q1 > 0 || i.q2 > 0).length;
+  document.getElementById('heroCnt').textContent = `${cnt}개 입력`;
+}
+
+// 메시지 빌드
+function buildMsg() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  const c1 = document.getElementById('c1lbl').value || '수량';
+  const c2 = document.getElementById('c2lbl').value || '단위';
+  const filled = data.filter(i => i.q1 > 0 || i.q2 > 0);
+  if (!filled.length) return null;
+
+  let msg = `🏪 최우영고기야 발주 리스트\n📅 ${d.getMonth()+1}/${d.getDate()}(${days[d.getDay()]})\n━━━━━━━━━━━━━━\n\n🥩 고기\n`;
+  filled.forEach(i => {
+    let line = `  ${i.emoji} ${i.name}:`;
+    if (i.q1 > 0) line += `  ${c1} ${i.q1}`;
+    if (i.q2 > 0) line += `  ${c2} ${i.q2}`;
+    msg += line + '\n';
+  });
+  const memo = document.getElementById('memo').value.trim();
+  if (memo) msg += `\n📝 메모\n${memo}\n`;
+  return msg + '━━━━━━━━━━━━━━';
+}
+
+function buildPreview() {
+  const el = document.getElementById('prev');
+  const msg = buildMsg();
+  if (!msg) {
+    el.className = 'prev-empty';
+    el.textContent = '수량을 입력하면 여기에 메시지가 표시됩니다.';
+  } else {
+    el.className = 'prev-txt';
+    el.textContent = msg;
+  }
+}
+document.getElementById('memo').addEventListener('input', buildPreview);
+
+// 공유
+async function doShare() {
+  const msg = buildMsg();
+  if (!msg) { showToast('⚠️ 수량을 먼저 입력해주세요'); return; }
+  try {
+    const blob = new Blob([msg], {type:'text/plain'});
+    const file = new File([blob], '고기발주.txt', {type:'text/plain'});
+    if (navigator.canShare && navigator.canShare({files:[file]})) {
+      await navigator.share({files:[file], title:'고기 발주 리스트'});
+      return;
+    }
+  } catch(e){}
+  try {
+    if (navigator.share) {
+      await navigator.share({title:'고기 발주 리스트', text:msg});
+      return;
+    }
+  } catch(e){}
+  await copyText(msg);
+  showToast('📋 복사 완료! 카카오톡에 붙여넣어 주세요');
+}
+
+async function doCopy() {
+  const msg = buildMsg();
+  if (!msg) { showToast('⚠️ 수량을 먼저 입력해주세요'); return; }
+  await copyText(msg);
+  showToast('📋 복사 완료!');
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return; } catch(e){}
+  const el = document.createElement('textarea');
+  el.value = text; document.body.appendChild(el); el.select();
+  document.execCommand('copy'); document.body.removeChild(el);
+}
+
+function doReset() {
+  if (!confirm('전체 수량을 초기화할까요?')) return;
+  data = ITEMS.map(v => ({...v, q1:0, q2:0}));
+  document.getElementById('memo').value = '';
+  render();
+  showToast('↺ 초기화 완료');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+render();
+</script>
+</body>
+</html>
