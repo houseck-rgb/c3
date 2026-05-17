@@ -196,22 +196,22 @@ body{
 }
 
 /* 행 */
-.mrow{
+.vrow{
   display:grid;
   grid-template-columns:1fr 82px 82px;
   border-bottom:1px solid rgba(200,150,10,.07);
   align-items:center;
 }
 
-.mrow:last-child{
+.vrow:last-child{
   border-bottom:none;
 }
 
-.mrow.filled{
+.vrow.filled{
   background:rgba(248,113,113,.04);
 }
 
-.mrow-name{
+.vrow-name{
   padding:10px 14px;
   display:flex;
   align-items:center;
@@ -220,19 +220,35 @@ body{
   font-weight:500;
 }
 
-.mrow-emo{
+.vrow-emo{
   font-size:17px;
   width:22px;
   text-align:center;
 }
 
-.mrow-cell{
+.vrow-cell{
   padding:7px 6px;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
+  .qbtn{
+  width:30px;
+  height:30px;
+  border:none;
+  border-radius:8px;
+  background:#2a1d08;
+  color:var(--gold2);
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.qbtn:active{
+  transform:scale(.95);
+}
+  
 /* 입력 */
 .qin{
   width:66px;
@@ -419,7 +435,8 @@ body{
 
     </div>
 
-    <div id="meatBody"></div>
+    <div id="vegBody"></div>
+     <div id="deliveryBody"></div>
 
   </div>
 
