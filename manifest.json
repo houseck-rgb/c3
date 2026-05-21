@@ -1,6 +1,6 @@
 {
   "name": "최우영고기야 고기 발주 앱",
-  "short_name": "최우영고기야 주방",
+  "short_name": "고기야 미트",
   "start_url": "./?v=10",
   "display": "standalone",
   "background_color": "#ffffff",
